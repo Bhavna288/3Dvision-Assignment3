@@ -15,7 +15,8 @@ function initScene () {
 	camera.position.z = 15;
 
 	renderer = new THREE.WebGLRenderer();
-	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.setSize(container.clientWidth, container.clientHeight);
+
 	container.appendChild(renderer.domElement);
 
 	controls = new OrbitControls(camera, renderer.domElement);
@@ -56,10 +57,11 @@ function animate () {
 }
 
 function onWindowResize () {
-	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.aspect = container.clientWidth / container.clientHeight;
 	camera.updateProjectionMatrix();
-	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.setSize(container.clientWidth, container.clientHeight);
 }
+
 
 // Add the window resize event listener
 window.addEventListener('resize', onWindowResize, false);
