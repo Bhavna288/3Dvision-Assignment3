@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Reconstruction Project Report</title>
+    <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://unpkg.com/three@0.147.0/build/three.module.js",
+                    "three/addons/": "https://unpkg.com/three@0.147.0/examples/jsm/"
+                }
+            }
+        </script>
+    <style>
+        body {
+            margin: 25px;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .content {
+            margin: 20px;
+        }
+
+        h1,
+        h2 {
+            color: #333;
+        }
+
+        p {
+            color: #2d2c2c;
+        }
+
+        video {
+            margin: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+
+        td,
+        th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1>Assignment 3</h1>
+        <p>
+            This assignment is part of an advanced study in computer vision and photogrammetry, focusing on the training
+            and
+            implementation of Neural Radiance Fields (NeRF) and 3D Gaussian Splatting (3DGS).
+        </p>
+
+        <h2>Algorithms Used</h2>
+        <p>
+            The core of this project revolves around two cutting-edge technologies: NeRF and 3D Gaussian Splatting. NeRF
+            represents a novel approach to scene reconstruction that models the volumetric scene functionally using a
+            neural network. This network learns to map spatial coordinates and viewing directions to RGB colors and
+            density, which are used to synthesize images via differentiable rendering from novel viewpoints.
+        </p>
+        <p>
+            On the other hand, 3D Gaussian Splatting simplifies the rendering process by treating each point in a point
+            cloud as a Gaussian, projecting these points onto a 2D plane. This approach allows for efficient rendering
+            from new perspectives, making it particularly suitable for interactive applications. This technique's
+            primary challenge lies in managing the density of points to avoid oversaturation on the 2D plane while
+            maintaining enough detail in sparser regions.
+        </p>
+
+        <h2>Implementation Details</h2>
+        <p>The implementation of this project can be broken down into three main phases: data collection and processing,
+            model
+            training, and rendering. Each phase utilizes a sequence of steps implemented in Google Colab, leveraging its
+            powerful GPU resources.</p>
+
+        <h3>Data Collection and Processing</h3>
+        <p>The initial step involves collecting and processing the input data. For this project, I captured a video of a
+            stuffed
+            bunny toy. Using a Colab notebook interface, I provided options for users to upload their data in various
+            formats:
+            images, videos, or structured data from other specific sources. Depending on the
+            user's
+            selection, the data is either directly uploaded or fetched from a preset scene.</p>
+        <p>Once the data is uploaded, it is processed based on its type. For images, the data is directly converted into
+            a
+            format suitable for 3D reconstruction. For videos, additional steps are taken to extract relevant frames and
+            metadata required for generating 3D models. This processing is achieved using the 'ns-process-data' command
+            from the
+            NerfStudio toolkit, which prepares the data by creating appropriate directories and processing the inputs to
+            generate the required configuration files for training.</p>
+
+        <h3>Training</h3>
+        <p>After data processing, the next phase is model training. This phase uses the 3D Gaussian Splatting technique,
+            which
+            is initiated by installing necessary packages and setting up the environment. The training process is
+            interactive,
+            allowing for real-time monitoring and adjustments. A terminal session is launched within Colab, where
+            training
+            commands are executed. The training command, specific to the processed data, configures the training
+            parameters like
+            the downscale factor and viewer options, maximizing the use of Colab's computational resources.</p>
+        <p>Important feedback during this stage includes visual feedback from the viewer and terminal logs, ensuring
+            that any
+            issues can be addressed promptly. The environment variable settings and package installations are crucial
+            for
+            ensuring that the training environment is correctly configured for optimal performance.</p>
+
+        <h3>Rendering</h3>
+        <p>The final phase is rendering the trained model to generate a video. This process involves specifying a camera
+            path
+            that defines the viewpoint transitions throughout the video. I uploaded a JSON file that details this
+            path, and the rendering command uses this path along with the training configuration to produce the final
+            video.</p>
+
+
+        <p></p>
+        <h2>Results and Comparison</h2>
+        <p>
+            Training the models required substantial computational resources, for which Google Colab's high-tier GPUs,
+            specifically the A100, were utilized. The training process was meticulously monitored to optimize the
+            various parameters affecting the quality of the reconstructions. The generated models were then compared
+            with those produced by COLMAP, a well-respected open-source tool in the photogrammetry community.
+        </p>
+        <p>The model training and reconstruction were evaluated using a set of quantitative metrics that assess both the
+            quality of the 3D reconstructions and the efficiency of the computational processes involved. Below are the
+            detailed results obtained from the final trained model.</p>
+
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Standard Deviation</th>
+            </tr>
+            <tr>
+                <td>Peak Signal-to-Noise Ratio (PSNR)</td>
+                <td>34.57 dB</td>
+                <td>2.70 dB</td>
+            </tr>
+            <tr>
+                <td>Structural Similarity Index (SSIM)</td>
+                <td>0.974</td>
+                <td>0.009</td>
+            </tr>
+            <tr>
+                <td>Learned Perceptual Image Patch Similarity (LPIPS)</td>
+                <td>0.022</td>
+                <td>0.008</td>
+            </tr>
+            <tr>
+                <td>Rays Processed per Second</td>
+                <td>11,724,818 rays/sec</td>
+                <td>2,426,289 rays/sec</td>
+            </tr>
+            <tr>
+                <td>Frames per Second (FPS)</td>
+                <td>91 fps</td>
+                <td>18.83 fps</td>
+            </tr>
+        </table>
+
+        <p>These metrics provide a comprehensive view of the model's performance. The high PSNR and SSIM values indicate
+            that
+            the reconstructions closely resemble the original images, with high accuracy and minimal loss. The LPIPS
+            metric,
+            which measures perceptual similarity to human vision, also shows that the model produces visually pleasing
+            results.
+            The computational efficiency is reflected in the high number of rays processed per second and the frames per
+            second,
+            demonstrating the model's capability to render scenes smoothly in real-time.</p>
+
+        <h2>Visualizations</h2>
+        <p>Below, original video and video generated using ns-render command is shown.
+            <!--, interactive 3D models generated by our NeRF and 3DGS
+            systems can be compared directly with those from COLMAP. This hands-on visual component allows for an
+            immersive examination of the nuances in each
+            reconstruction
+            technique.-->
+        </p>
+    </div>
+    <section>
+        <video id="video-original" width="640" height="480" controls>
+            <source src="bunny.mov" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <video id="video-generated" width="640" height="480" controls>
+            <source src="2024-05-01-04-39-29.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </section>
+    <script type="module" src="assignment3.js"></script>
+    <!-- Assuming your Three.js code is in js/assignment3.js -->
+
+</body>
+
+</html>
