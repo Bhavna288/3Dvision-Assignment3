@@ -20,17 +20,19 @@ function initScene () {
 
 	controls = new OrbitControls(camera, renderer.domElement);
 	controls.minDistance = 2;
-	controls.maxDistance = 50;
+	controls.maxDistance = 10;
 	controls.addEventListener('change', function () { renderer.render(scene, camera); });
-	controls.update();
+
 
 	// Load PLY files
 	const loader = new PLYLoader();
 	for (let i = 2; i <= 19; i++) {
-		loader.load(`splat.ply`, function (geometry) {
+		loader.load(`photocatch.ply`, function (geometry) {
 			geometry.computeVertexNormals();
 			const material = new THREE.PointsMaterial({ size: 0.05, vertexColors: true });
 			const points = new THREE.Points(geometry, material);
+			points.scale.set(5, 5, 5); // Adjust these values as needed to reduce the size
+
 			scene.add(points);
 		});
 	}
@@ -64,6 +66,6 @@ window.addEventListener('resize', onWindowResize, false);
 
 // Initialize everything
 initScene();
-initSTATS();
+//initSTATS();
 initGUI();
 animate();
